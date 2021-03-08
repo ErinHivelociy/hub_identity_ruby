@@ -7,6 +7,7 @@ ActiveRecord::Migrator.migrations_paths << File.expand_path('../db/migrate', __d
 require "rails/test_help"
 require 'pry'
 require 'webmock/minitest'
+require 'rails-controller-testing'
 
 require_relative 'support/server_helpers'
 

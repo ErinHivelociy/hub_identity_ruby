@@ -1,21 +1,33 @@
 require_dependency "hub_identity_ruby/application_controller"
 
-class SessionsController < ApplicationController
+module HubIdentityRuby
+  class SessionsController < ApplicationController
 
-  def new
-    redirect_to "#{ENV['HUBIDENTITY_URL']}/browser/v1/providers?api_key=#{ENV['HUBIDENTITY_PUBLIC_KEY']}"
-  end
+    def new
+      redirect_to "#{ENV['HUBIDENTITY_URL']}/browser/v1/providers?api_key=#{ENV['HUBIDENTITY_PUBLIC_KEY']}"
+    end
 
-  def create
-    cookie_id = cookies[:_hub_identity_access]
-    current_user = HubIdentity::Server.get_current_user(cookie_id)
-    session[:current_user] = current_user if current_user
-    redirect_to "/"
-  end
+    def create
+      current_user = get_current_user
+      if current_user
+        session[:current_user] = current_user
+        redirect_to "/"
+      else
+        flash[:alert] = "authentication failure"
+        redirect_to sessions_new_path
+      end
+    end
 
-  def destroy
-    session[:current_user] = nil
-    reset_session
-    redirect_to "/"
+    def destroy
+      session.destroy
+      flash[:notice] = "logged out sucessfully"
+      redirect_to "/"
+    end
+
+    private
+
+    def get_current_user
+      HubIdentityRuby::Server.get_current_user(cookies[:_hub_identity_access])
+    end
   end
 end

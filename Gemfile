@@ -12,5 +12,9 @@ group :development do
   gem 'pry', '~> 0.13.1'
 end
 
+group :test do
+  gem 'rails-controller-testing'
+end
+
 # To use a debugger
 # gem 'byebug', group: [:development, :test]

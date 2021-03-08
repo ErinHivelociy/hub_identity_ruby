@@ -18,11 +18,12 @@ end
 
 def test_current_user
   {
-    Object: "CurrentUser",
-    owner_type: nil,
-    owner_uid: nil,
-    uid: "380549d1-cf9a-4bcb-b671-a2667e8d2301",
-    user_type: "Identities.User"
+    "Object" => "CurrentUser",
+    "owner_type" => nil,
+    "owner_uid" => nil,
+    "email" => "erin@hivelocity.co.jp",
+    "uid" => "380549d1-cf9a-4bcb-b671-a2667e8d2301",
+    "user_type" => "Identities.User"
   }
 end
 

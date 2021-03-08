@@ -15,15 +15,17 @@ module HubIdentityRuby
     end
 
     def self.get_current_user(cookie_id)
-      uri = URI("#{hostname}/api/v1/current_user/#{cookie_id}")
-      request = build_private_key_request(uri)
-      response = Net::HTTP.start(uri.hostname, uri.port) {|http|
-        http.request(request)
-      }
-      if response.code == "200"
-        JSON.parse(response.body, symbolize_names: true)
-      else
-        nil
+      if cookie_id.present?
+        uri = URI("#{hostname}/api/v1/current_user/#{cookie_id}")
+        request = build_private_key_request(uri)
+        response = Net::HTTP.start(uri.hostname, uri.port) {|http|
+          http.request(request)
+        }
+        if response.code == "200"
+          CurrentUser.new(response.body).hash
+        else
+          nil
+        end
       end
     end
 

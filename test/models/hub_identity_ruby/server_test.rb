@@ -47,11 +47,11 @@ module HubIdentityRuby
 
        current_user = HubIdentityRuby::Server.get_current_user(cookie_id)
 
-       assert current_user[:email] == test_current_user[:emal]
-       assert current_user[:uid] == test_current_user[:uid]
+       assert current_user["email"] == "erin@hivelocity.co.jp"
+       assert current_user["uid"] == "380549d1-cf9a-4bcb-b671-a2667e8d2301"
     end
 
-    test "get_current_user/1returns nil if invalid cookie" do
+    test "get_current_user/1 returns nil if invalid cookie" do
       cookie_id = "invalid_cookie_id"
       stub_request(:get, "http://stage-identity.hubsynch.com:443/api/v1/current_user/#{cookie_id}").
         with(
@@ -64,6 +64,11 @@ module HubIdentityRuby
         to_return(status: 400, body: "bad request", headers: {})
 
       assert_nil HubIdentityRuby::Server.get_current_user(cookie_id)
+    end
+
+    test "get_current_user/1 returns nil if cookie is empty" do
+      assert_nil HubIdentityRuby::Server.get_current_user("")
+      assert_nil HubIdentityRuby::Server.get_current_user(nil)
     end
   end
 end
