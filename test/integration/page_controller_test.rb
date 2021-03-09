@@ -15,20 +15,20 @@ module HubIdentityRuby
     end
 
     test "when authenticated user allows them to continue" do
-      stub_request(:get, "http://stage-identity.hubsynch.com:443/api/v1/current_user/test_cookie_id").
+      stub_request(:get, "https://stage-identity.hubsynch.com:443/api/v1/current_user/test_cookie_id").
         to_return(status: 200, body: JSON.fast_generate(test_current_user), headers: {})
 
-      get hub_identity_ruby.sessions_create_path, headers: {"HTTP_COOKIE" => "_hub_identity_access=test_cookie_id;"}
+      get hub_identity_ruby.sessions_create_path(user_token: "test_cookie_id")
 
       get "/page_1"
       assert_response :success
     end
 
     test "when authenticated assigns the current_user" do
-      stub_request(:get, "http://stage-identity.hubsynch.com:443/api/v1/current_user/test_cookie_id").
+      stub_request(:get, "https://stage-identity.hubsynch.com:443/api/v1/current_user/test_cookie_id").
         to_return(status: 200, body: JSON.fast_generate(test_current_user), headers: {})
 
-      get hub_identity_ruby.sessions_create_path, headers: {"HTTP_COOKIE" => "_hub_identity_access=test_cookie_id;"}
+      get hub_identity_ruby.sessions_create_path(user_token: "test_cookie_id")
 
       get "/page_1"
       assert_response :success

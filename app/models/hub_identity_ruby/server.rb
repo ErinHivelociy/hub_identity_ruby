@@ -1,27 +1,24 @@
-require 'net/http'
-
 module HubIdentityRuby
   class Server
     HUBIDENTITY_BASE_URL = "https://stage-identity.hubsynch.com"
 
     def self.certs
-      uri = URI("#{hostname}/api/v1/oauth/certs")
-      certs = Net::HTTP.get(uri)
-      JSON.parse(certs, symbolize_names: true)
+      response = Faraday.get "#{hostname}/api/v1/oauth/certs"
+      JSON.parse(response.body, symbolize_names: true)
     end
 
     def self.get_cert(key_id)
       certs.find {|key| key[:kid] == key_id}
     end
 
-    def self.get_current_user(cookie_id)
-      if cookie_id.present?
-        uri = URI("#{hostname}/api/v1/current_user/#{cookie_id}")
-        request = build_private_key_request(uri)
-        response = Net::HTTP.start(uri.hostname, uri.port) {|http|
-          http.request(request)
-        }
-        if response.code == "200"
+    def self.get_current_user(user_token)
+      if user_token.present?
+        url = "#{hostname}/api/v1/current_user/#{user_token}"
+        response = Faraday.get(url) do |req|
+          req.headers['x-api-key'] = private_api_key
+        end
+
+        if response.status == 200
           CurrentUser.new(response.body).hash
         else
           nil
@@ -36,11 +33,12 @@ module HubIdentityRuby
     class << self
       private
 
-      def build_private_key_request(uri)
-        request = Net::HTTP::Get.new(uri)
-        request["x-api-key"] = ENV['HUBIDENTITY_PRIVATE_KEY']
-        request
+      def private_api_key
+        ENV['HUBIDENTITY_PRIVATE_KEY']
       end
     end
   end
 end
+
+# HUBIDENTITY_PRIVATE_KEY="prv_8Ie7zwor2u13S7ZAzn_hDgB70q9hU0MURa0eOypk81E"
+# HUBIDENTITY_PUBLIC_KEY="pub_BDsNx7wkVWFKAgRSH3IQ_8ZtqlP4qlyPnskvRPlNmsg"

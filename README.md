@@ -11,7 +11,9 @@ Add this line to your application's Gemfile:
 
 ```ruby
 gem 'hub_identity_ruby'
+gem 'faraday'
 ```
+If Faraday is not also installed Rails will complain. :(
 
 And then execute:
 ```bash
@@ -37,29 +39,13 @@ This will add the following routes to your application:
 - sessions_create GET    /sessions/create(.:format)  hub_identity_ruby/sessions#create
 - sessions_destroy DELETE /sessions/destroy(.:format) hub_identity_ruby/sessions#destroy
 
-## Logging a user out
-It is recommended to allow two logout options.
-- Logout from your Application
-- Logout from HubIdentity
-
-Both use the same logout path `sessions_destroy`
-
-### Logout from your Application
-This will clear the users session and still allow a user to login using a HubIdentity
-cookie (if the cookie persists). This will allow a user who is authenticated at HubIdentity
-to continue to use applications which use HubIdentity until the cookie expires.
-
-### Logout from HubIdentity
-This will clear the users session and destroy the HubIdentity cookie.
-This will allow users who use other applications which use HubIdentity until they logout from them.
-Then they will have to authenticate again with HubIdentity.
 
 ## Environmental Variables
 set your public and private keys and HubIdentity url
 ```bash
 HUBIDENTITY_PRIVATE_KEY="a private key from HubIdentity website"
 HUBIDENTITY_PUBLIC_KEY="a public key from HubIdentity website"
-HUBIDENTITY_URL="for production deployment"
+HUBIDENTITY_URL="for production deployment defaults to staging server"
 ```
 
 Currently the HUBIDENTITY_URL defaults to staging HubIdentity server.

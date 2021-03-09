@@ -5,6 +5,7 @@ git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 gemspec
 
 gem 'jwt'
+gem 'faraday'
 
 group :development do
   gem 'sqlite3'
@@ -15,6 +16,3 @@ end
 group :test do
   gem 'rails-controller-testing'
 end
-
-# To use a debugger
-# gem 'byebug', group: [:development, :test]
