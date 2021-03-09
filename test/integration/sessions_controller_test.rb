@@ -75,9 +75,8 @@ module HubIdentityRuby
 
       refute_nil @controller.session[:current_user]
 
-      delete hub_identity_ruby.sessions_destroy_path
+      delete hub_identity_ruby.sessions_destroy_path, headers: {"HTTP_COOKIE" => "_hub_identity_access=test_cookie_id;"}
 
-      assert_nil @controller.session[:current_user]
     end
 
     test "destroy/0 redirects to the / path" do
@@ -89,6 +88,16 @@ module HubIdentityRuby
       delete hub_identity_ruby.sessions_destroy_path
 
       assert @controller.flash.notice == "logged out sucessfully"
+    end
+
+    test "destroy/0 deletes the cookie with hub_identity: true" do
+      stub_request(:get, "http://stage-identity.hubsynch.com:443/api/v1/current_user/test_cookie_id").
+        to_return(status: 200, body: JSON.fast_generate(test_current_user), headers: {})
+
+      delete hub_identity_ruby.sessions_destroy_path(hub_identity: true), headers: {"HTTP_COOKIE" => "_hub_identity_access=test_cookie_id;"}
+
+      assert @controller.flash.notice == "logged out of HubIdentity sucessfully"
+      assert_redirected_to "/"
     end
   end
 end
