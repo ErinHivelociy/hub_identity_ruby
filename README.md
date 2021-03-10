@@ -11,9 +11,7 @@ Add this line to your application's Gemfile:
 
 ```ruby
 gem 'hub_identity_ruby'
-gem 'faraday'
 ```
-If Faraday is not also installed Rails will complain. :(
 
 And then execute:
 ```bash

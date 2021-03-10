@@ -3,7 +3,8 @@ module HubIdentityRuby
     HUBIDENTITY_BASE_URL = "https://stage-identity.hubsynch.com"
 
     def self.certs
-      response = Faraday.get "#{hostname}/api/v1/oauth/certs"
+      # response = Faraday.get "#{hostname}/api/v1/oauth/certs"
+      response = Excon.get("#{hostname}/api/v1/oauth/certs")
       JSON.parse(response.body, symbolize_names: true)
     end
 
@@ -14,9 +15,10 @@ module HubIdentityRuby
     def self.get_current_user(user_token)
       if user_token.present?
         url = "#{hostname}/api/v1/current_user/#{user_token}"
-        response = Faraday.get(url) do |req|
-          req.headers['x-api-key'] = private_api_key
-        end
+        response = Excon.get(url, :headers => {'x-api-key' => private_api_key})
+        # response = Faraday.get(url) do |req|
+        #   req.headers['x-api-key'] = private_api_key
+        # end
 
         if response.status == 200
           CurrentUser.new(response.body).hash
@@ -40,5 +42,3 @@ module HubIdentityRuby
   end
 end
 
-# HUBIDENTITY_PRIVATE_KEY="prv_8Ie7zwor2u13S7ZAzn_hDgB70q9hU0MURa0eOypk81E"
-# HUBIDENTITY_PUBLIC_KEY="pub_BDsNx7wkVWFKAgRSH3IQ_8ZtqlP4qlyPnskvRPlNmsg"

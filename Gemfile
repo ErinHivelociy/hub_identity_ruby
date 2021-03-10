@@ -5,7 +5,7 @@ git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 gemspec
 
 gem 'jwt'
-gem 'faraday'
+gem 'excon'
 
 group :development do
   gem 'sqlite3'
